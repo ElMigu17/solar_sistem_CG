@@ -14,6 +14,7 @@
 - [ ] Adicionar planetas restantes
 - [ ] Fazer o zoom funcionar corretamente independente da rotação do sistema
 - [ ] Adicionar luas
+- [ ] Adicionar cinturão de asteroides (?)
 
 
 ## Quais interações temos?
