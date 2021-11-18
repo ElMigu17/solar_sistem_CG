@@ -5,7 +5,7 @@
 - [x] Ambiente colorido
 - [x] Interação com teclado e mouse (ainda faltam algumas coisas)
 - [ ] Operações de transformações geométricas
-- [ ] Iluminação
+- [x] Iluminação
 - [ ] Animação
 - [ ] Textura
 - [ ] Manipulação de objetos hierárquicos
