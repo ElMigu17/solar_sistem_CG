@@ -52,9 +52,10 @@
 
 static int year = 0, day = 0;
 static int moon_year = 0, moon_day = 0;
-static double dv = 20.0;
+static float dv = 20.0;
 static int iv = 0;
 static double zoom = 100.0;
+
 
 double rotate_y=0;
 double rotate_x=0;
@@ -66,36 +67,11 @@ void init(void)
    glShadeModel (GL_FLAT);
       glShadeModel (GL_SMOOTH);
 
-	float a = 0.1;
-	float luzAmbiente[] = {a, a, a, 0.5f};
-	
-	float d = 0.7;
-	float e = 0.7;
-	float luzDifusa[] = {d, d, d, 1.0f};
-	float luzEspecular[] = {e, e, e, 1.0f};
-	float posicaoLuz[] = { 0.0f, 0.0f, 0.0f, 1.0f};
 
-
-	// Ativa o uso da luz ambiente 
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
-  glEnable(GL_COLOR_MATERIAL);
-	// Define os parâmetros da luz de número 0
-	glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente);
-	
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular);
-	glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz);
-	
-
-  glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
-
-   glEnable(GL_LIGHTING);
-   glEnable(GL_LIGHT0);
    
 	 glEnable(GL_DEPTH_TEST);
 	 glEnable(GL_CULL_FACE);
-	 glCullFace(GL_BACK);
+	 glCullFace(GL_FRONT);
    
 }
 
@@ -163,7 +139,7 @@ void criaPlanetas(){
 	    
 		  glPushMatrix();
    		glRotatef ((GLfloat) day_in_the_planet, 0.0, 1.0, 0.0);
-   		std::cout<<year<<" "<<day_in_the_planet<<" "<<zoom<<" "<< total_rotate_x<<std::endl;
+   		std::cout<<year<<" "<<day_in_the_planet<<" "<<zoom<<std::endl;
 	    glTranslatef (distancia[i] + 20, 0.0, 0.0);
       glColor3f(cores[i][0], cores[i][1], cores[i][2]);
 		  glRotatef ((GLfloat) day , 1.0, 0.0, 0.0);
@@ -172,8 +148,42 @@ void criaPlanetas(){
 	 }
 }
 
+void makeLuz(){
+	float a = 0.2f;
+	float luzAmbiente[] = {a, a, a, 0.0f};
+	
+	float d = 1.0;
+	float e = 1.0;
+	float luzDifusa[] = {d, d, d, 1.0f};
+	float luzEspecular[] = {e, e, e, 1.0f};
+	float posicaoLuz[] = {0.0f, 0.0f, 0.0f, 1.0f};
+
+
+	// Ativa o uso da luz ambiente 
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+  glEnable(GL_COLOR_MATERIAL);
+	// Define os parâmetros da luz de número 0
+	glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente);
+	
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular);
+	glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz);
+	
+
+  glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+
+   glEnable(GL_LIGHTING);
+   glEnable(GL_LIGHT0);
+
+   
+
+}
+
+
 void display(void)
 {
+
 
    glTranslatef(0,0,zoom);
    zoom = 0;
@@ -182,11 +192,19 @@ void display(void)
    glRotatef(rotate_y, 0.0, 1.0, 0.0);
    rotate_x = 0;
    rotate_y = 0;
+      
+	 glCullFace(GL_FRONT);
+	 
+	 float a = 0.7f;
+	 float luzAmbiente[] = {a, a, a, 0.5f};
+	 glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
    
-   
+
    glPushMatrix();
    glColor3f(1.0, 0.5, 0.0);
    glutSolidSphere(20.0, 20, 16);   /* draw sun */
+
+	 makeLuz();
 
 	 criaPlanetas();
    /*
@@ -250,11 +268,13 @@ void keyboard (unsigned char key, int x, int y)
          glutPostRedisplay();
          break;
       case 'q':
-         dv = dv + 0.1;
+         dv = dv + 1;
+         std::cout<<dv<<std::endl;
          glutPostRedisplay();
          break;
       case 'Q':
-         dv = dv - 0.1;
+         dv = dv - 1;
+         std::cout<<dv<<std::endl;
          glutPostRedisplay();
          break;
       case 'w':
