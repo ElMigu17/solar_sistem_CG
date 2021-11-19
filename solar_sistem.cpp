@@ -57,8 +57,7 @@ static double zoom = 100.0;
 void reshape (int w, int h);
 double rotate_y=0;
 double rotate_x=0;
-double total_rotate_y=0;
-double total_rotate_x=0;
+double rotate_z=0;
 
 void init(void) 
 {
@@ -186,6 +185,7 @@ void display(void)
    glClear (GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
    glRotatef(rotate_x, 1.0, 0.0, 0.0);
    glRotatef(rotate_y, 0.0, 1.0, 0.0);
+   glRotatef(rotate_z, 0.0, 0.0, 1.0);
       
    glCullFace(GL_FRONT);
    
@@ -309,6 +309,12 @@ void mouseWheel(int button, int dir, int x, int y)
    {
       zoom -= 1;
    }
+   else if(button == 1){
+      rotate_z += 5%360;
+   }
+   else if(button == 2){
+      rotate_z -= 5%360;
+   }
    std::cout<<zoom<<std::endl;   
    int w = 1000;
    int h = 700;
@@ -320,21 +326,16 @@ void specialKeys(int key, int x, int y){
 
    if(key == GLUT_KEY_RIGHT){
       rotate_y += 5%360;
-      total_rotate_y += 5%360;
    }
    else if(key == GLUT_KEY_LEFT){
       rotate_y -= 5%360;
-      total_rotate_y -= 5%360;
    }
    else if(key == GLUT_KEY_UP){
       rotate_x += 5%360;
-      total_rotate_x += 5%360;
    }
    else if(key == GLUT_KEY_DOWN){
       rotate_x -= 5%360;
-      total_rotate_x -= 5%360;
    }
-   std::cout<<"zzz:"<<sin(total_rotate_y)<<" "<<sin(total_rotate_x)<<std::endl;
 
    glutPostRedisplay();
 }
