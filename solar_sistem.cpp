@@ -48,17 +48,17 @@
 #include <map>
 #include <math.h>
 
-//link do meu video no youtube: https://youtu.be/SBrXr0gtFdg
-
 static int year = 0, day = 0;
 static int moon_year = 0, moon_day = 0;
 static float dv = 20.0;
 static int iv = 0;
 static double zoom = 100.0;
 
-
+void reshape (int w, int h);
 double rotate_y=0;
 double rotate_x=0;
+double total_rotate_y=0;
+double total_rotate_x=0;
 
 void init(void) 
 {
@@ -69,108 +69,105 @@ void init(void)
 
 
    
-	 glEnable(GL_DEPTH_TEST);
-	 glEnable(GL_CULL_FACE);
-	 glCullFace(GL_FRONT);
+   glEnable(GL_DEPTH_TEST);
+   glEnable(GL_CULL_FACE);
+   glCullFace(GL_FRONT);
    
 }
 
 void criaPlanetas(){
-	 int qtd = 4;
-	 double cores[qtd][3];
-	 double distancia[qtd];
-	 double tamanho[qtd][3];
-	 double velocidade_ano[qtd];
-	 int dias_no_ano[qtd];
-	 
-	 // mercurio
-	 cores[0][0] = 1.0;
-	 cores[0][1] = cores[0][2] = 0.0;
-	 
-	 distancia[0] = 11.58;
-	 
-	 tamanho[0][0] = 1.4;
-	 tamanho[0][1] = 10;
-	 tamanho[0][2] = 8;
-	 
-	 dias_no_ano[0] = 88;
-	 
-	 //venus
-	 cores[1][0] = 1.0;
-	 cores[1][1] = 1.0;
-	 cores[1][2] = 0.0;
-	 
-	 distancia[1] = 21.64;
-	 
-	 tamanho[1][0] = 3.5;
-	 tamanho[1][1] = 14;
-	 tamanho[1][2] = 10;
-	 
-	 dias_no_ano[1] = 225;
-	 
-	 //terra
-	 cores[2][0] = 0.0;
-	 cores[2][1] = 0.0;
-	 cores[2][2] = 1.0;
-	 
-	 distancia[2] = 29.92;
-	 
-	 tamanho[2][0] = 3.7;
-	 tamanho[2][1] = 14;
-	 tamanho[2][2] = 10;
-	 
-	 dias_no_ano[2] = 365;
-	 
- 	 //marte
-	 cores[3][0] = 1.0;
-	 cores[3][1] = 0.0;
-	 cores[3][2] = 0.0;
-	 
-	 distancia[3] = 45.588;
-	 
-	 tamanho[3][0] = 2;
-	 tamanho[3][1] = 14;
-	 tamanho[3][2] = 10;
-	 
-	 dias_no_ano[3] = 687;
-	 
-	 for(int i=0; i<qtd; i++){
-	 		GLfloat day_in_the_planet = ((GLfloat)360/(GLfloat)dias_no_ano[i]) * year;
-	    
-		  glPushMatrix();
-   		glRotatef ((GLfloat) day_in_the_planet, 0.0, 1.0, 0.0);
-   		std::cout<<year<<" "<<day_in_the_planet<<" "<<zoom<<std::endl;
-	    glTranslatef (distancia[i] + 20, 0.0, 0.0);
+   int qtd = 4;
+   double cores[qtd][3];
+   double distancia[qtd];
+   double tamanho[qtd][3];
+   double velocidade_ano[qtd];
+   int dias_no_ano[qtd];
+   
+   // mercurio
+   cores[0][0] = cores[0][1] = cores[0][2] = 0.863;
+   
+   distancia[0] = 11.58;
+   
+   tamanho[0][0] = 1.4;
+   tamanho[0][1] = 10;
+   tamanho[0][2] = 8;
+   
+   dias_no_ano[0] = 88;
+   
+   //venus
+   cores[1][0] = 0.886;
+   cores[1][1] = 0.617;
+   cores[1][2] = 0.109;
+   
+   distancia[1] = 21.64;
+   
+   tamanho[1][0] = 3.5;
+   tamanho[1][1] = 14;
+   tamanho[1][2] = 10;
+   
+   dias_no_ano[1] = 225;
+   
+   //terra
+   cores[2][0] = 0.109;
+   cores[2][1] = 0.289;
+   cores[2][2] = 0.613;
+   
+   distancia[2] = 29.92;
+   
+   tamanho[2][0] = 3.7;
+   tamanho[2][1] = 14;
+   tamanho[2][2] = 10;
+   
+   dias_no_ano[2] = 365;
+   
+   //marte
+   cores[3][0] = 0.839;
+   cores[3][1] = 0.316;
+   cores[3][2] = 0.171;
+   
+   distancia[3] = 45.588;
+   
+   tamanho[3][0] = 2;
+   tamanho[3][1] = 14;
+   tamanho[3][2] = 10;
+   
+   dias_no_ano[3] = 687;
+   
+   for(int i=0; i<qtd; i++){
+      GLfloat day_in_the_planet = ((GLfloat)360/(GLfloat)dias_no_ano[i]) * year;
+
+      glPushMatrix();
+      glRotatef ((GLfloat) day_in_the_planet, 0.0, 1.0, 0.0);
+      glTranslatef (distancia[i] + 20, 0.0, 0.0);
       glColor3f(cores[i][0], cores[i][1], cores[i][2]);
-		  glRotatef ((GLfloat) day , 1.0, 0.0, 0.0);
-		  glutSolidSphere(tamanho[i][0], tamanho[i][1], tamanho[i][2]); 
-		  glPopMatrix();		  
-	 }
+      glRotatef ((GLfloat) day , 1.0, 0.0, 0.0);
+      glutSolidSphere(tamanho[i][0], tamanho[i][1], tamanho[i][2]); 
+      glPopMatrix();        
+   }
 }
 
 void makeLuz(){
-	float a = 0.2f;
-	float luzAmbiente[] = {a, a, a, 0.0f};
-	
-	float d = 1.0;
-	float e = 1.0;
-	float luzDifusa[] = {d, d, d, 1.0f};
-	float luzEspecular[] = {e, e, e, 1.0f};
-	float posicaoLuz[] = {0.0f, 0.0f, 0.0f, 1.0f};
+   float a = 0.2f;
+   float luzAmbiente[] = {a, a, a, 0.0f};
+   
+   float d = 1.0;
+   float e = 1.0;
+   float luzDifusa[] = {d, d, d, 1.0f};
+   float luzEspecular[] = {e, e, e, 1.0f};
+   float posicaoLuz[] = {0.0f, 0.0f, 0.0f, 1.0f};
 
+   // Ativa o uso da luz ambiente 
+   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+   glEnable(GL_COLOR_MATERIAL);
+   // Define os parâmetros da luz de número 0
+   glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente);
 
-	// Ativa o uso da luz ambiente 
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
-  glEnable(GL_COLOR_MATERIAL);
-	// Define os parâmetros da luz de número 0
-	glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente);
-	
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular);
-	glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz);
-	
+   glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa);
+   glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular);
+   glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz);
+   
 
-  glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+   glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
 
    glEnable(GL_LIGHTING);
@@ -184,29 +181,26 @@ void makeLuz(){
 void display(void)
 {
 
+   reshape(1000, 700);
 
-   glTranslatef(0,0,zoom);
-   zoom = 0;
    glClear (GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
    glRotatef(rotate_x, 1.0, 0.0, 0.0);
    glRotatef(rotate_y, 0.0, 1.0, 0.0);
-   rotate_x = 0;
-   rotate_y = 0;
       
-	 glCullFace(GL_FRONT);
-	 
-	 float a = 0.7f;
-	 float luzAmbiente[] = {a, a, a, 0.5f};
-	 glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+   glCullFace(GL_FRONT);
+   
+   float a = 0.7f;
+   float luzAmbiente[] = {a, a, a, 0.5f};
+   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
    
 
    glPushMatrix();
    glColor3f(1.0, 0.5, 0.0);
    glutSolidSphere(20.0, 20, 16);   /* draw sun */
 
-	 makeLuz();
+   makeLuz();
 
-	 criaPlanetas();
+   criaPlanetas();
    /*
    glColor3f (1.0, 1.0, 1.0);
    glRotatef ((GLfloat) moon_year, 0.0, 1.0, 0.0);
@@ -229,7 +223,6 @@ void reshape (int w, int h)
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
    gluLookAt (0.0, 0.0, 200.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-   
 }
 
 void keyboard (unsigned char key, int x, int y)
@@ -286,14 +279,14 @@ void keyboard (unsigned char key, int x, int y)
          glutPostRedisplay();
          break;
       case 'z':
-      	 zoom = 1;
+         zoom = 1;
          glutPostRedisplay();
          break;
       case 'Z':
-      	 zoom = -1;
+         zoom = -1;
          glutPostRedisplay();
          break;
-      	 
+      
       case 27:
          exit(0);
          break;
@@ -307,36 +300,43 @@ void keyboard (unsigned char key, int x, int y)
 
 void mouseWheel(int button, int dir, int x, int y)
 {
-    glTranslatef(0,0,0);
-    if (button == 3)
-    {
-        zoom = 2;
-    }
-    else if(button == 4)
-    {
-        zoom = -2;
-    }
-    std::cout<<zoom<<std::endl;
+   glTranslatef(0,0,0);
+   if (button == 3)
+   {
+      zoom += 1;
+   }
+   else if(button == 4)
+   {
+      zoom -= 1;
+   }
+   std::cout<<zoom<<std::endl;   
+   int w = 1000;
+   int h = 700;
 
-    glutPostRedisplay();
+   glutPostRedisplay();
 }
 
 void specialKeys(int key, int x, int y){
 
-    if(key == GLUT_KEY_RIGHT){
-        rotate_y += 5;
-    }
-    else if(key == GLUT_KEY_LEFT){
-        rotate_y -= 5;
-    }
-    else if(key == GLUT_KEY_UP){
-        rotate_x += 5;
-    }
-    else if(key == GLUT_KEY_DOWN){
-        rotate_x -= 5;
-    }
+   if(key == GLUT_KEY_RIGHT){
+      rotate_y += 5%360;
+      total_rotate_y += 5%360;
+   }
+   else if(key == GLUT_KEY_LEFT){
+      rotate_y -= 5%360;
+      total_rotate_y -= 5%360;
+   }
+   else if(key == GLUT_KEY_UP){
+      rotate_x += 5%360;
+      total_rotate_x += 5%360;
+   }
+   else if(key == GLUT_KEY_DOWN){
+      rotate_x -= 5%360;
+      total_rotate_x -= 5%360;
+   }
+   std::cout<<"zzz:"<<sin(total_rotate_y)<<" "<<sin(total_rotate_x)<<std::endl;
 
-    glutPostRedisplay();
+   glutPostRedisplay();
 }
 
 
