@@ -4,7 +4,7 @@
 - [x] Desenvolvimento de ambiente 2D ou 3D em OpenGL
 - [x] Ambiente colorido
 - [x] Interação com teclado e mouse (ainda faltam algumas coisas)
-- [ ] Operações de transformações geométricas
+- [x] Operações de transformações geométricas
 - [x] Iluminação
 - [ ] Animação
 - [ ] Textura
@@ -12,7 +12,7 @@
 
 ## O que falta fazer?
 - [ ] Adicionar planetas restantes
-- [ ] Fazer o zoom funcionar corretamente independente da rotação do sistema
+- [x] Fazer o zoom funcionar corretamente independente da rotação do sistema
 - [ ] Adicionar luas
 - [ ] Adicionar cinturão de asteroides (?)
 
