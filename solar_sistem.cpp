@@ -262,24 +262,7 @@ void keyboard (unsigned char key, int x, int y)
          year = year - 1;
          glutPostRedisplay();
          break;
-      case 'q':
-         dv = dv + 1;
-         std::cout<<dv<<std::endl;
-         glutPostRedisplay();
-         break;
-      case 'Q':
-         dv = dv - 1;
-         std::cout<<dv<<std::endl;
-         glutPostRedisplay();
-         break;
-      case 'w':
-         iv = iv + 1;
-         glutPostRedisplay();
-         break;
-      case 'W':
-         iv = iv - 1;
-         glutPostRedisplay();
-         break;
+      
 
       
       case 27:
