@@ -136,11 +136,13 @@ void criaPlanetas(){
       GLfloat day_in_the_planet = ((GLfloat)360/(GLfloat)dias_no_ano[i]) * year;
 
       glPushMatrix();
-      glRotatef ((GLfloat) day_in_the_planet, 0.0, 1.0, 0.0);
+      
+      glRotatef (day_in_the_planet, 0.0, 1.0, 0.0);
       glTranslatef (distancia[i] + 20, 0.0, 0.0);
       glColor3f(cores[i][0], cores[i][1], cores[i][2]);
       glRotatef ((GLfloat) day , 1.0, 0.0, 0.0);
       glutSolidSphere(tamanho[i][0], tamanho[i][1], tamanho[i][2]); 
+
       glPopMatrix();        
    }
 }
@@ -244,22 +246,6 @@ void keyboard (unsigned char key, int x, int y)
          year = year - 1;
          glutPostRedisplay();
          break;
-      case 'n':
-         moon_day = (moon_day + 10) % 360;
-         glutPostRedisplay();
-         break;
-      case 'N':
-         moon_day = (moon_day - 10) % 360;
-         glutPostRedisplay();
-         break;
-      case 'm':
-         moon_year = (moon_year + 5) % 360;
-         glutPostRedisplay();
-         break;
-      case 'M':
-         moon_year = (moon_year - 5) % 360;
-         glutPostRedisplay();
-         break;
       case 'q':
          dv = dv + 1;
          std::cout<<dv<<std::endl;
@@ -278,14 +264,7 @@ void keyboard (unsigned char key, int x, int y)
          iv = iv - 1;
          glutPostRedisplay();
          break;
-      case 'z':
-         zoom = 1;
-         glutPostRedisplay();
-         break;
-      case 'Z':
-         zoom = -1;
-         glutPostRedisplay();
-         break;
+
       
       case 27:
          exit(0);
