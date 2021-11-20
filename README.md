@@ -8,7 +8,7 @@
 - [x] Iluminação
 - [ ] Animação
 - [ ] Textura
-- [ ] Manipulação de objetos hierárquicos
+- [x] Manipulação de objetos hierárquicos
 
 ## O que falta fazer?
 - [ ] Adicionar planetas restantes
