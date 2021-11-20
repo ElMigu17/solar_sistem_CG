@@ -47,6 +47,7 @@
 #include <iostream>
 #include <map>
 #include <math.h>
+#include <vector>
 
 static int year = 0, day = 0;
 static int moon_year = 0, moon_day = 0;
@@ -58,6 +59,24 @@ void reshape (int w, int h);
 double rotate_y=0;
 double rotate_x=0;
 double rotate_z=0;
+
+class CospoCeleste {
+   public:
+      double cores[3];
+      double distancia;
+      double tamanho[3];
+      int dias_no_ano;
+      vector<CelestialBody> corpos_orbitando;
+
+      CelestialBody(double cores[3], double distancia, double tamanho[3], int dias_no_ano, vector<CelestialBody> corpos_orbitando){
+         this.cores = cores;
+         this.distancia = distancia;
+         this.tamanho = tamanho;
+         this.dias_no_ano = dias_no_ano;
+         this.corpos_orbitando = corpos_orbitando;
+      }
+
+}
 
 void init(void) 
 {
@@ -75,74 +94,50 @@ void init(void)
 }
 
 void criaPlanetas(){
-   int qtd = 4;
-   double cores[qtd][3];
-   double distancia[qtd];
-   double tamanho[qtd][3];
-   double velocidade_ano[qtd];
-   int dias_no_ano[qtd];
-   
-   // mercurio
-   cores[0][0] = cores[0][1] = cores[0][2] = 0.863;
-   
-   distancia[0] = 11.58;
-   
-   tamanho[0][0] = 1.4;
-   tamanho[0][1] = 10;
-   tamanho[0][2] = 8;
-   
-   dias_no_ano[0] = 88;
-   
-   //venus
-   cores[1][0] = 0.886;
-   cores[1][1] = 0.617;
-   cores[1][2] = 0.109;
-   
-   distancia[1] = 21.64;
-   
-   tamanho[1][0] = 3.5;
-   tamanho[1][1] = 14;
-   tamanho[1][2] = 10;
-   
-   dias_no_ano[1] = 225;
+   vector<CelestialBody> planetas;
+
+   CelestialBody mercuirio([0.863, 0.863, 0.863], 11.58, [1.4, 10, 8], 88, NULL)
+   CelestialBody venus([0.886, 0.617, 0.109], 21.64, [3.5, 14, 10], 225, NULL)
    
    //terra
-   cores[2][0] = 0.109;
-   cores[2][1] = 0.289;
-   cores[2][2] = 0.613;
-   
-   distancia[2] = 29.92;
-   
-   tamanho[2][0] = 3.7;
-   tamanho[2][1] = 14;
-   tamanho[2][2] = 10;
-   
-   dias_no_ano[2] = 365;
-   
+   CelestialBody lua([0.663, 0.663, 0.663], 0.07, [1, 8, 6], 27, NULL)
+   vector<CelestialBody> luas;
+   luas.append(lua)
+   CelestialBody terra([0.109, 0.289, 0.613], 29.92, [3.7, 14, 10], 365, luas)
+         
    //marte
-   cores[3][0] = 0.839;
-   cores[3][1] = 0.316;
-   cores[3][2] = 0.171;
+   CelestialBody marte([0.839, 0.316, 0.171], 45.588, [2, 14, 10], 687, NULL)
    
-   distancia[3] = 45.588;
-   
-   tamanho[3][0] = 2;
-   tamanho[3][1] = 14;
-   tamanho[3][2] = 10;
-   
-   dias_no_ano[3] = 687;
-   
-   for(int i=0; i<qtd; i++){
-      GLfloat day_in_the_planet = ((GLfloat)360/(GLfloat)dias_no_ano[i]) * year;
+   planetas.append(mercurio)
+   planetas.append(venus)
+   planetas.append(terra)
+   planetas.append(marte)
+
+   for(auto i = planetas.begin(); i < planetas.end(); ++i){
+      GLfloat day_in_the_planet = ((GLfloat)360/(GLfloat)i.dias_no_ano) * year;
 
       glPushMatrix();
       
       glRotatef (day_in_the_planet, 0.0, 1.0, 0.0);
-      glTranslatef (distancia[i] + 20, 0.0, 0.0);
-      glColor3f(cores[i][0], cores[i][1], cores[i][2]);
+      glTranslatef (i.distancia + 20, 0.0, 0.0);
+      glColor3f(i.cores[0], i.cores[1], i.cores[2]);
       glRotatef ((GLfloat) day , 1.0, 0.0, 0.0);
-      glutSolidSphere(tamanho[i][0], tamanho[i][1], tamanho[i][2]); 
+      glutSolidSphere(i.tamanho[0], i.tamanho[1], i.tamanho[2]); 
 
+      if( i.corpos_orbitando != NULL ){
+         for(auto j = i.corpos_orbitando.begin(); j < i.corpos_orbitando.end(); ++j){
+            GLfloat day_in_the_moon = ((GLfloat)360/(GLfloat)j.dias_no_ano) * year;
+            glPushMatrix();
+      
+            glRotatef (day_in_the_planet, 0.0, 1.0, 0.0);
+            glTranslatef (j.distancia + 20, 0.0, 0.0);
+            glColor3f(j.cores[0], j.cores[1], j.cores[2]);
+            glRotatef ((GLfloat) day , 1.0, 0.0, 0.0);
+            glutSolidSphere(j.tamanho[0], j.tamanho[1], j.tamanho[2]);  
+
+            glPopMatrix();   
+         }
+      }
       glPopMatrix();        
    }
 }
