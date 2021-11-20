@@ -60,23 +60,26 @@ double rotate_y=0;
 double rotate_x=0;
 double rotate_z=0;
 
-class CospoCeleste {
+class CorpoCeleste {
    public:
       double cores[3];
       double distancia;
       double tamanho[3];
-      int dias_no_ano;
-      vector<CelestialBody> corpos_orbitando;
+      int dias_terrestre_no_ano;
+      std::vector<CorpoCeleste> corpos_orbitando;
 
-      CelestialBody(double cores[3], double distancia, double tamanho[3], int dias_no_ano, vector<CelestialBody> corpos_orbitando){
-         this.cores = cores;
-         this.distancia = distancia;
-         this.tamanho = tamanho;
-         this.dias_no_ano = dias_no_ano;
-         this.corpos_orbitando = corpos_orbitando;
+      CorpoCeleste(double cores[3], double distancia, double tamanho[3], int dias_terrestre_no_ano, std::vector<CorpoCeleste> corpos_orbitando){
+         for(int i = 0; i < 3; i++){
+            this->cores[i] = cores[i];
+            this->tamanho[i] = tamanho[i];
+         
+         }
+         this->distancia = distancia;
+         this->dias_terrestre_no_ano = dias_terrestre_no_ano;
+         this->corpos_orbitando = corpos_orbitando;
       }
 
-}
+};
 
 void init(void) 
 {
@@ -94,46 +97,63 @@ void init(void)
 }
 
 void criaPlanetas(){
-   vector<CelestialBody> planetas;
+   std::vector<CorpoCeleste> planetas;
+   std::vector<CorpoCeleste> corpo_null;
+   
+   double cores[3] = {0.863, 0.863, 0.863};
+   double tamanho[3] = {1.4, 10, 8};
+   CorpoCeleste mercurio(cores, 11.58, tamanho, 88, corpo_null);
 
-   CelestialBody mercuirio([0.863, 0.863, 0.863], 11.58, [1.4, 10, 8], 88, NULL)
-   CelestialBody venus([0.886, 0.617, 0.109], 21.64, [3.5, 14, 10], 225, NULL)
+   double cores1[3] = {0.886, 0.617, 0.109};
+   double tamanho1[3] = {3.5, 14, 10};
+   CorpoCeleste venus(cores1, 21.64, tamanho1, 225, corpo_null);
    
    //terra
-   CelestialBody lua([0.663, 0.663, 0.663], 0.07, [1, 8, 6], 27, NULL)
-   vector<CelestialBody> luas;
-   luas.append(lua)
-   CelestialBody terra([0.109, 0.289, 0.613], 29.92, [3.7, 14, 10], 365, luas)
-         
-   //marte
-   CelestialBody marte([0.839, 0.316, 0.171], 45.588, [2, 14, 10], 687, NULL)
-   
-   planetas.append(mercurio)
-   planetas.append(venus)
-   planetas.append(terra)
-   planetas.append(marte)
+   double cores2[3] = {0.163, 0.163, 0.163};
+   double tamanho2[3] = {1, 8, 6};
+   CorpoCeleste lua(cores, 1.07, tamanho2, 27, corpo_null);
+   std::vector<CorpoCeleste> luas;
 
-   for(auto i = planetas.begin(); i < planetas.end(); ++i){
-      GLfloat day_in_the_planet = ((GLfloat)360/(GLfloat)i.dias_no_ano) * year;
+   luas.push_back(lua);
+   double cores3[3] = {0.109, 0.289, 0.613};
+   double tamanho3[3] = {3.7, 14, 10};
+   CorpoCeleste terra(cores3, 29.92, tamanho3, 365, luas);
+         
+
+ 
+
+   //marte   
+   double cores4[3] = {0.839, 0.316, 0.171};
+   double tamanho4[3] = {2, 14, 10};
+   CorpoCeleste marte(cores4, 45.588, tamanho4, 687, corpo_null);
+   
+   planetas.push_back(mercurio);
+   planetas.push_back(venus);
+   planetas.push_back(terra);
+   planetas.push_back(marte);
+   std::cout<<"Dia: "<<day<<std::endl;
+   for(int i = 0; i < planetas.size(); ++i){
+      GLfloat day_in_the_planet = ((GLfloat)360/(GLfloat) planetas[i].dias_terrestre_no_ano) * year;
 
       glPushMatrix();
       
       glRotatef (day_in_the_planet, 0.0, 1.0, 0.0);
-      glTranslatef (i.distancia + 20, 0.0, 0.0);
-      glColor3f(i.cores[0], i.cores[1], i.cores[2]);
-      glRotatef ((GLfloat) day , 1.0, 0.0, 0.0);
-      glutSolidSphere(i.tamanho[0], i.tamanho[1], i.tamanho[2]); 
+      glTranslatef (planetas[i].distancia + 20, 0.0, 0.0);
+      glColor3f(planetas[i].cores[0], planetas[i].cores[1], planetas[i].cores[2]);
+      glRotatef ((GLfloat) year*13, 0.0, 1.0, 0.0);
+      glutSolidSphere(planetas[i].tamanho[0], planetas[i].tamanho[1], planetas[i].tamanho[2]); 
 
-      if( i.corpos_orbitando != NULL ){
-         for(auto j = i.corpos_orbitando.begin(); j < i.corpos_orbitando.end(); ++j){
-            GLfloat day_in_the_moon = ((GLfloat)360/(GLfloat)j.dias_no_ano) * year;
+      if( planetas[i].corpos_orbitando.size() != 0 ){
+         for(int j = 0; j < planetas[i].corpos_orbitando.size(); ++j){
+            CorpoCeleste satelite =  planetas[i].corpos_orbitando[j];
+
+            GLfloat day_in_the_moon = ((GLfloat)360/(GLfloat)satelite.dias_terrestre_no_ano) * year;
             glPushMatrix();
       
             glRotatef (day_in_the_planet, 0.0, 1.0, 0.0);
-            glTranslatef (j.distancia + 20, 0.0, 0.0);
-            glColor3f(j.cores[0], j.cores[1], j.cores[2]);
-            glRotatef ((GLfloat) day , 1.0, 0.0, 0.0);
-            glutSolidSphere(j.tamanho[0], j.tamanho[1], j.tamanho[2]);  
+            glTranslatef (satelite.distancia + planetas[i].tamanho[0], 0.0, 0.0);
+            glColor3f(satelite.cores[0], satelite.cores[1], satelite.cores[2]);
+            glutSolidSphere(satelite.tamanho[0], satelite.tamanho[1], satelite.tamanho[2]);  
 
             glPopMatrix();   
          }
@@ -180,9 +200,7 @@ void display(void)
    reshape(1000, 700);
 
    glClear (GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-   glRotatef(rotate_x, 1.0, 0.0, 0.0);
-   glRotatef(rotate_y, 0.0, 1.0, 0.0);
-   glRotatef(rotate_z, 0.0, 0.0, 1.0);
+
       
    glCullFace(GL_FRONT);
    
@@ -192,6 +210,9 @@ void display(void)
    
 
    glPushMatrix();
+   glRotatef(rotate_x, 1.0, 0.0, 0.0);
+   glRotatef(rotate_y, 0.0, 1.0, 0.0);
+   glRotatef(rotate_z, 0.0, 0.0, 1.0);
    glColor3f(1.0, 0.5, 0.0);
    glutSolidSphere(20.0, 20, 16);   /* draw sun */
 
@@ -226,11 +247,11 @@ void keyboard (unsigned char key, int x, int y)
 {
    switch (key) {
       case 'd':
-         day = day + 1;
+         day = day + 5;
          glutPostRedisplay();
          break;
       case 'D':
-         day = day - 1;
+         day = day - 5;
          glutPostRedisplay();
          break;
       case 'y':
@@ -275,21 +296,21 @@ void keyboard (unsigned char key, int x, int y)
 void mouseWheel(int button, int dir, int x, int y)
 {
    glTranslatef(0,0,0);
-   if (button == 3)
+   if (button == 4)
    {
       zoom += 1;
    }
-   else if(button == 4)
+   else if(button == 3)
    {
       zoom -= 1;
    }
-   else if(button == 1){
-      rotate_z += 5%360;
-   }
    else if(button == 2){
-      rotate_z -= 5%360;
+      rotate_z += 2%360;
    }
-   std::cout<<zoom<<std::endl;   
+   else if(button == 0){
+      rotate_z -= 2%360;
+   }
+   std::cout<<"button: "<<button<<std::endl;   
    int w = 1000;
    int h = 700;
 
