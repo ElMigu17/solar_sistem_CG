@@ -47,6 +47,7 @@
 #include <iostream>
 #include <map>
 #include <math.h>
+#include <vector>
 
 static int year = 0, day = 0;
 static int moon_year = 0, moon_day = 0;
@@ -58,6 +59,27 @@ void reshape (int w, int h);
 double rotate_y=0;
 double rotate_x=0;
 double rotate_z=0;
+
+class CorpoCeleste {
+   public:
+      double cores[3];
+      double distancia;
+      double tamanho[3];
+      int dias_terrestre_no_ano;
+      std::vector<CorpoCeleste> corpos_orbitando;
+
+      CorpoCeleste(double cores[3], double distancia, double tamanho[3], int dias_terrestre_no_ano, std::vector<CorpoCeleste> corpos_orbitando){
+         for(int i = 0; i < 3; i++){
+            this->cores[i] = cores[i];
+            this->tamanho[i] = tamanho[i];
+         
+         }
+         this->distancia = distancia;
+         this->dias_terrestre_no_ano = dias_terrestre_no_ano;
+         this->corpos_orbitando = corpos_orbitando;
+      }
+
+};
 
 void init(void) 
 {
@@ -75,74 +97,67 @@ void init(void)
 }
 
 void criaPlanetas(){
-   int qtd = 4;
-   double cores[qtd][3];
-   double distancia[qtd];
-   double tamanho[qtd][3];
-   double velocidade_ano[qtd];
-   int dias_no_ano[qtd];
+   std::vector<CorpoCeleste> planetas;
+   std::vector<CorpoCeleste> corpo_null;
    
-   // mercurio
-   cores[0][0] = cores[0][1] = cores[0][2] = 0.863;
-   
-   distancia[0] = 11.58;
-   
-   tamanho[0][0] = 1.4;
-   tamanho[0][1] = 10;
-   tamanho[0][2] = 8;
-   
-   dias_no_ano[0] = 88;
-   
-   //venus
-   cores[1][0] = 0.886;
-   cores[1][1] = 0.617;
-   cores[1][2] = 0.109;
-   
-   distancia[1] = 21.64;
-   
-   tamanho[1][0] = 3.5;
-   tamanho[1][1] = 14;
-   tamanho[1][2] = 10;
-   
-   dias_no_ano[1] = 225;
+   double cores[3] = {0.863, 0.863, 0.863};
+   double tamanho[3] = {1.4, 10, 8};
+   CorpoCeleste mercurio(cores, 11.58, tamanho, 88, corpo_null);
+
+   double cores1[3] = {0.886, 0.617, 0.109};
+   double tamanho1[3] = {3.5, 14, 10};
+   CorpoCeleste venus(cores1, 21.64, tamanho1, 225, corpo_null);
    
    //terra
-   cores[2][0] = 0.109;
-   cores[2][1] = 0.289;
-   cores[2][2] = 0.613;
+   double cores2[3] = {0.163, 0.163, 0.163};
+   double tamanho2[3] = {1, 8, 6};
+   CorpoCeleste lua(cores, 1.07, tamanho2, 27, corpo_null);
+   std::vector<CorpoCeleste> luas;
+
+   luas.push_back(lua);
+   double cores3[3] = {0.109, 0.289, 0.613};
+   double tamanho3[3] = {3.7, 14, 10};
+   CorpoCeleste terra(cores3, 29.92, tamanho3, 365, luas);
+         
+
+ 
+
+   //marte   
+   double cores4[3] = {0.839, 0.316, 0.171};
+   double tamanho4[3] = {2, 14, 10};
+   CorpoCeleste marte(cores4, 45.588, tamanho4, 687, corpo_null);
    
-   distancia[2] = 29.92;
-   
-   tamanho[2][0] = 3.7;
-   tamanho[2][1] = 14;
-   tamanho[2][2] = 10;
-   
-   dias_no_ano[2] = 365;
-   
-   //marte
-   cores[3][0] = 0.839;
-   cores[3][1] = 0.316;
-   cores[3][2] = 0.171;
-   
-   distancia[3] = 45.588;
-   
-   tamanho[3][0] = 2;
-   tamanho[3][1] = 14;
-   tamanho[3][2] = 10;
-   
-   dias_no_ano[3] = 687;
-   
-   for(int i=0; i<qtd; i++){
-      GLfloat day_in_the_planet = ((GLfloat)360/(GLfloat)dias_no_ano[i]) * year;
+   planetas.push_back(mercurio);
+   planetas.push_back(venus);
+   planetas.push_back(terra);
+   planetas.push_back(marte);
+   std::cout<<"Dia: "<<day<<std::endl;
+   for(int i = 0; i < planetas.size(); ++i){
+      GLfloat day_in_the_planet = ((GLfloat)360/(GLfloat) planetas[i].dias_terrestre_no_ano) * year;
 
       glPushMatrix();
       
       glRotatef (day_in_the_planet, 0.0, 1.0, 0.0);
-      glTranslatef (distancia[i] + 20, 0.0, 0.0);
-      glColor3f(cores[i][0], cores[i][1], cores[i][2]);
-      glRotatef ((GLfloat) day , 1.0, 0.0, 0.0);
-      glutSolidSphere(tamanho[i][0], tamanho[i][1], tamanho[i][2]); 
+      glTranslatef (planetas[i].distancia + 20, 0.0, 0.0);
+      glColor3f(planetas[i].cores[0], planetas[i].cores[1], planetas[i].cores[2]);
+      glRotatef ((GLfloat) year*13, 0.0, 1.0, 0.0);
+      glutSolidSphere(planetas[i].tamanho[0], planetas[i].tamanho[1], planetas[i].tamanho[2]); 
 
+      if( planetas[i].corpos_orbitando.size() != 0 ){
+         for(int j = 0; j < planetas[i].corpos_orbitando.size(); ++j){
+            CorpoCeleste satelite =  planetas[i].corpos_orbitando[j];
+
+            GLfloat day_in_the_moon = ((GLfloat)360/(GLfloat)satelite.dias_terrestre_no_ano) * year;
+            glPushMatrix();
+      
+            glRotatef (day_in_the_planet, 0.0, 1.0, 0.0);
+            glTranslatef (satelite.distancia + planetas[i].tamanho[0], 0.0, 0.0);
+            glColor3f(satelite.cores[0], satelite.cores[1], satelite.cores[2]);
+            glutSolidSphere(satelite.tamanho[0], satelite.tamanho[1], satelite.tamanho[2]);  
+
+            glPopMatrix();   
+         }
+      }
       glPopMatrix();        
    }
 }
@@ -185,9 +200,7 @@ void display(void)
    reshape(1000, 700);
 
    glClear (GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-   glRotatef(rotate_x, 1.0, 0.0, 0.0);
-   glRotatef(rotate_y, 0.0, 1.0, 0.0);
-   glRotatef(rotate_z, 0.0, 0.0, 1.0);
+
       
    glCullFace(GL_FRONT);
    
@@ -197,6 +210,9 @@ void display(void)
    
 
    glPushMatrix();
+   glRotatef(rotate_x, 1.0, 0.0, 0.0);
+   glRotatef(rotate_y, 0.0, 1.0, 0.0);
+   glRotatef(rotate_z, 0.0, 0.0, 1.0);
    glColor3f(1.0, 0.5, 0.0);
    glutSolidSphere(20.0, 20, 16);   /* draw sun */
 
@@ -231,11 +247,11 @@ void keyboard (unsigned char key, int x, int y)
 {
    switch (key) {
       case 'd':
-         day = day + 1;
+         day = day + 5;
          glutPostRedisplay();
          break;
       case 'D':
-         day = day - 1;
+         day = day - 5;
          glutPostRedisplay();
          break;
       case 'y':
@@ -246,24 +262,7 @@ void keyboard (unsigned char key, int x, int y)
          year = year - 1;
          glutPostRedisplay();
          break;
-      case 'q':
-         dv = dv + 1;
-         std::cout<<dv<<std::endl;
-         glutPostRedisplay();
-         break;
-      case 'Q':
-         dv = dv - 1;
-         std::cout<<dv<<std::endl;
-         glutPostRedisplay();
-         break;
-      case 'w':
-         iv = iv + 1;
-         glutPostRedisplay();
-         break;
-      case 'W':
-         iv = iv - 1;
-         glutPostRedisplay();
-         break;
+      
 
       
       case 27:
@@ -280,21 +279,21 @@ void keyboard (unsigned char key, int x, int y)
 void mouseWheel(int button, int dir, int x, int y)
 {
    glTranslatef(0,0,0);
-   if (button == 3)
+   if (button == 4)
    {
       zoom += 1;
    }
-   else if(button == 4)
+   else if(button == 3)
    {
       zoom -= 1;
    }
-   else if(button == 1){
-      rotate_z += 5%360;
-   }
    else if(button == 2){
-      rotate_z -= 5%360;
+      rotate_z += 2%360;
    }
-   std::cout<<zoom<<std::endl;   
+   else if(button == 0){
+      rotate_z -= 2%360;
+   }
+   std::cout<<"button: "<<button<<std::endl;   
    int w = 1000;
    int h = 700;
 
