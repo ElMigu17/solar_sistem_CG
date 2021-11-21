@@ -24,3 +24,4 @@
 - Tecla ← e →: Rotação em torno do eixo Y
 - Botão esquerdo e direito do mouse: Rotação em torno do eixo Z
 - Bolinha do mouse pra cima e para baixo: zoom
+- Tecla L ou l: Ambos mudam o estado da luz - de ligada para desligada ou o contrario
