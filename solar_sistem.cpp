@@ -50,17 +50,15 @@
 #include <vector>
 
 static int year = 0, day = 0;
-static int moon_year = 0, moon_day = 0;
-static float dv = 20.0;
-static int iv = 0;
 static double zoom = 1000.0;
-
-void reshape (int w, int h);
-void criaAnel(int raioInterno, int raioExterno);
 
 double rotate_y=0;
 double rotate_x=0;
 double rotate_z=0;
+
+void reshape (int w, int h);
+void criaAnel(int raioInterno, int raioExterno);
+
 
 class CorpoCeleste {
    public:
@@ -88,7 +86,7 @@ void init(void)
    glClearColor (0.0, 0.0, 0.0, 0.0);
    glEnable(GL_LINE_SMOOTH); 
    glShadeModel (GL_FLAT);
-      glShadeModel (GL_SMOOTH);
+   glShadeModel (GL_SMOOTH);
 
 
    
@@ -183,13 +181,16 @@ void criaPlanetas(){
          }
       }
 
-      if( i == 5 ){
+      if( i == 5 ){ //seleciona saturno
          
-      glDisable(GL_CULL_FACE);
-		criaAnel(20, 23);
-      glColor3f(0.487, 0.358, 0.110);
-		criaAnel(24, 26);
-      glEnable(GL_CULL_FACE);
+         glDisable(GL_CULL_FACE);
+         glDisable(GL_LIGHTING);
+         glColor3f(0.487, 0.358, 0.110);
+         criaAnel(20, 23);
+         glColor3f(0.387, 0.258, 0.000);
+         criaAnel(24, 26);
+         glEnable(GL_CULL_FACE);
+         glEnable(GL_LIGHTING);
       }
 
       glPopMatrix();        
@@ -271,19 +272,12 @@ void display(void)
    glRotatef(rotate_x, 1.0, 0.0, 0.0);
    glRotatef(rotate_y, 0.0, 1.0, 0.0);
    glRotatef(rotate_z, 0.0, 0.0, 1.0);
+
    glColor3f(1.0, 0.5, 0.0);
    glutSolidSphere(40.0, 20, 16);   /* draw sun */
 
    makeLuz();
-
    criaPlanetas();
-   /*
-   glColor3f (1.0, 1.0, 1.0);
-   glRotatef ((GLfloat) moon_year, 0.0, 1.0, 0.0);
-   glTranslatef (0.5, 0.0, 0.0);
-   glRotatef ((GLfloat) moon_day, 0.0, 1.0, 0.0);
-   https://www.khronos.org/opengl/wiki/Viewing_and_Transformations#How_does_the_camera_work_in_OpenGL.3F
-   glutSolidSphere(0.1, 16, 12);    /* draw moon */
 
    glPopMatrix();
    glutSwapBuffers();
