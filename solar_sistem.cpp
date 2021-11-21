@@ -277,13 +277,13 @@ void display(void)
    glutSwapBuffers();
 }
 
-void timer(int a)
+void rodaAnimacao(int a)
 {
-    if (automatic)
+    if (animacao)
     {
         glutPostRedisplay();
-        glutTimerFunc(1000 / 60, timer, a);
-         y += 1;
+        glutTimerFunc(1000 / 60, rodaAnimacao, a);
+        year += 1;
     }
 }
 
