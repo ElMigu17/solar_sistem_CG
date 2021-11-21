@@ -53,7 +53,7 @@ static int year = 0, day = 0;
 static int moon_year = 0, moon_day = 0;
 static float dv = 20.0;
 static int iv = 0;
-static double zoom = 100.0;
+static double zoom = 1000.0;
 
 void reshape (int w, int h);
 double rotate_y=0;
@@ -119,18 +119,40 @@ void criaPlanetas(){
    double tamanho3[3] = {3.7, 14, 10};
    CorpoCeleste terra(cores3, 29.92, tamanho3, 365, luas);
          
-
- 
-
    //marte   
    double cores4[3] = {0.839, 0.316, 0.171};
    double tamanho4[3] = {2, 14, 10};
    CorpoCeleste marte(cores4, 45.588, tamanho4, 687, corpo_null);
    
+   //Jupiter   
+   double cores5[3] = {0.785, 0.562, 0.222};
+   double tamanho5[3] = {17, 18, 16};
+   CorpoCeleste jupiter(cores5, 77.833, tamanho5, 4330, corpo_null);
+
+   //Saturno   
+   double cores6[3] = {0.687, 0.558, 0.210};
+   double tamanho6[3] = {15, 16, 14};
+   CorpoCeleste saturno(cores6, 142.94, tamanho6, 10752, corpo_null);
+
+   //Urano  
+   double cores7[3] = {0.332, 0.5, 0.664};
+   double tamanho7[3] = {7.35, 14, 12};
+   CorpoCeleste urano(cores7, 191.39, tamanho7, 31762, corpo_null);
+
+   //Netuno   
+   double cores8[3] = {0.210, 0.406, 0.585};
+   double tamanho8[3] = {7.1, 14, 12};
+   CorpoCeleste netuno(cores8, 225.218, tamanho8, 60140, corpo_null);
+
+
    planetas.push_back(mercurio);
    planetas.push_back(venus);
    planetas.push_back(terra);
    planetas.push_back(marte);
+   planetas.push_back(jupiter);
+   planetas.push_back(saturno);
+   planetas.push_back(urano);
+   planetas.push_back(netuno);
    std::cout<<"Dia: "<<day<<std::endl;
    for(int i = 0; i < planetas.size(); ++i){
       GLfloat day_in_the_planet = ((GLfloat)360/(GLfloat) planetas[i].dias_terrestre_no_ano) * year;
@@ -138,7 +160,7 @@ void criaPlanetas(){
       glPushMatrix();
       
       glRotatef (day_in_the_planet, 0.0, 1.0, 0.0);
-      glTranslatef (planetas[i].distancia + 20, 0.0, 0.0);
+      glTranslatef (planetas[i].distancia + 40, 0.0, 0.0);
       glColor3f(planetas[i].cores[0], planetas[i].cores[1], planetas[i].cores[2]);
       glRotatef ((GLfloat) year*13, 0.0, 1.0, 0.0);
       glutSolidSphere(planetas[i].tamanho[0], planetas[i].tamanho[1], planetas[i].tamanho[2]); 
@@ -214,7 +236,7 @@ void display(void)
    glRotatef(rotate_y, 0.0, 1.0, 0.0);
    glRotatef(rotate_z, 0.0, 0.0, 1.0);
    glColor3f(1.0, 0.5, 0.0);
-   glutSolidSphere(20.0, 20, 16);   /* draw sun */
+   glutSolidSphere(40.0, 20, 16);   /* draw sun */
 
    makeLuz();
 
@@ -262,7 +284,14 @@ void keyboard (unsigned char key, int x, int y)
          year = year - 1;
          glutPostRedisplay();
          break;
-      
+      case 'u':
+         year = year + 10;
+         glutPostRedisplay();
+         break;
+      case 'U':
+         year = year - 10;
+         glutPostRedisplay();
+         break;
 
       
       case 27:
