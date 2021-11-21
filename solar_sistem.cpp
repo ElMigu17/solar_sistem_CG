@@ -45,7 +45,6 @@
 #include <GL/glut.h>
 #include <stdlib.h>
 #include <iostream>
-#include <map>
 #include <math.h>
 #include <vector>
 
@@ -56,6 +55,7 @@ double rotate_y=0;
 double rotate_x=0;
 double rotate_z=0;
 static bool animacao = false;
+static bool luz = true;
 
 void reshape (int w, int h);
 void criaAnel(int raioInterno, int raioExterno);
@@ -130,12 +130,12 @@ void criaPlanetas(){
    CorpoCeleste venus(cores1, 21.64 + tamanhoSol, tamanho1, 225, corpo_null);
    
    //terra
-   double cores2[3] = {0.163, 0.163, 0.163};
+   double cores2[3] = {0.563, 0.563, 0.563};
    double tamanho2[3] = {1, 8, 6};
-   CorpoCeleste lua(cores, 1.07+3.7, tamanho2, 27, corpo_null);
+   CorpoCeleste lua(cores2, 2.07+3.7, tamanho2, 27, corpo_null);
    std::vector<CorpoCeleste> luas;
-
    luas.push_back(lua);
+   
    double cores3[3] = {0.109, 0.289, 0.613};
    double tamanho3[3] = {3.7, 14, 10};
    CorpoCeleste terra(cores3, 29.92 + tamanhoSol, tamanho3, 365, luas);
@@ -146,14 +146,38 @@ void criaPlanetas(){
    CorpoCeleste marte(cores4, 45.588 + tamanhoSol, tamanho4, 687, corpo_null);
    
    //Jupiter   
+   std::vector<CorpoCeleste> luasj;
+
+   double coreslj1[3] = {0.5898, 0.5937, 0.57421};
+   double tamanholj1[3] = {1.5, 8, 6};
+   CorpoCeleste ganymede(coreslj1, 4.21+17, tamanholj1, 7, corpo_null);
+   luasj.push_back(ganymede);
+
+   double coreslj2[3] = {0.4414, 0.3281, 0.2617};
+   double tamanholj2[3] = {1.38, 8, 6};
+   CorpoCeleste callisto(coreslj2, 3.37+17, tamanholj2, 16, corpo_null);
+   luasj.push_back(callisto);
+
+   double coreslj3[3] = {0.8476, 0.8125, 0.4023};
+   double tamanholj3[3] = {1.04, 8, 6};
+   CorpoCeleste io(coreslj3, 2.0008+17, tamanholj3, 2, corpo_null);
+   luasj.push_back(io);
+
    double cores5[3] = {0.785, 0.562, 0.222};
    double tamanho5[3] = {17, 18, 16};
-   CorpoCeleste jupiter(cores5, 77.833 + tamanhoSol, tamanho5, 4330, corpo_null);
+   CorpoCeleste jupiter(cores5, 77.833 + tamanhoSol, tamanho5, 4330, luasj);
 
-   //Saturno   
+   //Saturno
+   std::vector<CorpoCeleste> luass;
+
+   double coresls1[3] = {0.9257, 0.7539, 0.3242};
+   double tamanhols1[3] = {1.48, 8, 6};
+   CorpoCeleste titan(coreslj1, 12.244+15, tamanholj1, 15, corpo_null);
+   luass.push_back(titan);
+
    double cores6[3] = {0.687, 0.558, 0.210};
    double tamanho6[3] = {15, 16, 14};
-   CorpoCeleste saturno(cores6, 142.94 + tamanhoSol, tamanho6, 10752, corpo_null);
+   CorpoCeleste saturno(cores6, 142.94 + tamanhoSol, tamanho6, 10752, luass);
 
    //Urano  
    double cores7[3] = {0.332, 0.5, 0.664};
@@ -220,6 +244,12 @@ void criaAnel(int raioInterno, int raioExterno){
    glEnd();
 }
 
+void desligaLuz(){
+   glDisable(GL_COLOR_MATERIAL);
+   glDisable(GL_LIGHTING);
+   glDisable(GL_LIGHT0);
+}
+
 void fazLuz(){
    float luzAmbiente[] = {0.2, 0.2, 0.2, 0.0f};
    float luzDifusa[] = {1.0, 1.0, 1.0, 1.0f};
@@ -243,8 +273,10 @@ void fazLuz(){
 }
 
 void criaSol(){
-   float luzAmbiente[] = {0.7, 0.7, 0.7, 0.5f};
-   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+   if(luz){
+      float luzAmbiente[] = {0.7, 0.7, 0.7, 0.5f};
+      glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+   }
    glColor3f(1.0, 0.5, 0.0);
    glutSolidSphere(40.0, 20, 16); 
 }
@@ -270,7 +302,12 @@ void display(void)
       rotacionaSistema();
 
       criaSol();
-      fazLuz();
+      if(luz){
+         fazLuz();
+      }
+      else{
+         desligaLuz();
+      }
       criaPlanetas();
 
    glPopMatrix();
@@ -306,6 +343,7 @@ void keyboard (unsigned char key, int x, int y)
       case 'A':
          animacao = !animacao;
          rodaAnimacao(1);
+         break;
       case 'y':
          year = year + velocidade;
          glutPostRedisplay();
@@ -319,6 +357,11 @@ void keyboard (unsigned char key, int x, int y)
          break;
       case 'V':
          velocidade = 10;
+         break;
+      case 'l':
+      case 'L':
+         luz = !luz;
+         glutPostRedisplay();
          break;
 
       
@@ -349,8 +392,7 @@ void mouseWheel(int button, int dir, int x, int y)
    }
    else if(button == 0){
       rotate_z -= 2%360;
-   }
-   std::cout<<"button: "<<button<<std::endl;   
+   } 
    int w = 1000;
    int h = 700;
 
