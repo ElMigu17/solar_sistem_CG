@@ -11,7 +11,7 @@
 - [x] Manipulação de objetos hierárquicos
 
 ## O que falta fazer?
-- [ ] Adicionar planetas restantes
+- [x] Adicionar planetas restantes
 - [x] Fazer o zoom funcionar corretamente independente da rotação do sistema
 - [x] Adicionar luas
 - [ ] Adicionar cinturão de asteroides (?)
