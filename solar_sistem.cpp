@@ -49,7 +49,7 @@
 #include <math.h>
 #include <vector>
 
-static int year = 0, day = 0;
+static int year = 0;
 static double zoom = 1000.0;
 
 double rotate_y=0;
@@ -58,26 +58,43 @@ double rotate_z=0;
 
 void reshape (int w, int h);
 void criaAnel(int raioInterno, int raioExterno);
-
+void criaAneisSaturno();
 
 class CorpoCeleste {
    public:
       double cores[3];
       double distancia;
       double tamanho[3];
-      int dias_terrestre_no_ano;
+      int diasTerrestresNoAno;
       std::vector<CorpoCeleste> corpos_orbitando;
 
-      CorpoCeleste(double cores[3], double distancia, double tamanho[3], int dias_terrestre_no_ano, std::vector<CorpoCeleste> corpos_orbitando){
+      CorpoCeleste(double cores[3], double distancia, double tamanho[3], int diasTerrestresNoAno, std::vector<CorpoCeleste> corpos_orbitando){
          for(int i = 0; i < 3; i++){
             this->cores[i] = cores[i];
             this->tamanho[i] = tamanho[i];
          
          }
          this->distancia = distancia;
-         this->dias_terrestre_no_ano = dias_terrestre_no_ano;
+         this->diasTerrestresNoAno = diasTerrestresNoAno;
          this->corpos_orbitando = corpos_orbitando;
       }
+      void rederizaCorpo(){
+         GLfloat diaNoCorpo = ((GLfloat)360/(GLfloat) diasTerrestresNoAno) * year;
+         
+         glRotatef (diaNoCorpo, 0.0, 1.0, 0.0);
+         glTranslatef (distancia, 0.0, 0.0);
+         glColor3f(cores[0], cores[1], cores[2]);
+         glRotatef ((GLfloat) year*13, 0.0, 1.0, 0.0);
+         glutSolidSphere(tamanho[0], tamanho[1], tamanho[2]);         
+  
+         for(int i = 0; i < corpos_orbitando.size(); ++i){
+            glPushMatrix();
+               corpos_orbitando[i].rederizaCorpo();
+            glPopMatrix();   
+         }
+
+      }
+
 
 };
 
@@ -99,50 +116,53 @@ void init(void)
 void criaPlanetas(){
    std::vector<CorpoCeleste> planetas;
    std::vector<CorpoCeleste> corpo_null;
-   
+   double tamanhoSol = 40.0;
+
+   //mercurio
    double cores[3] = {0.863, 0.863, 0.863};
    double tamanho[3] = {1.4, 10, 8};
-   CorpoCeleste mercurio(cores, 11.58, tamanho, 88, corpo_null);
+   CorpoCeleste mercurio(cores, 11.58 + tamanhoSol, tamanho, 88, corpo_null);
 
+   //venus
    double cores1[3] = {0.886, 0.617, 0.109};
    double tamanho1[3] = {3.5, 14, 10};
-   CorpoCeleste venus(cores1, 21.64, tamanho1, 225, corpo_null);
+   CorpoCeleste venus(cores1, 21.64 + tamanhoSol, tamanho1, 225, corpo_null);
    
    //terra
    double cores2[3] = {0.163, 0.163, 0.163};
    double tamanho2[3] = {1, 8, 6};
-   CorpoCeleste lua(cores, 1.07, tamanho2, 27, corpo_null);
+   CorpoCeleste lua(cores, 1.07+3.7, tamanho2, 27, corpo_null);
    std::vector<CorpoCeleste> luas;
 
    luas.push_back(lua);
    double cores3[3] = {0.109, 0.289, 0.613};
    double tamanho3[3] = {3.7, 14, 10};
-   CorpoCeleste terra(cores3, 29.92, tamanho3, 365, luas);
+   CorpoCeleste terra(cores3, 29.92 + tamanhoSol, tamanho3, 365, luas);
          
    //marte   
    double cores4[3] = {0.839, 0.316, 0.171};
    double tamanho4[3] = {2, 14, 10};
-   CorpoCeleste marte(cores4, 45.588, tamanho4, 687, corpo_null);
+   CorpoCeleste marte(cores4, 45.588 + tamanhoSol, tamanho4, 687, corpo_null);
    
    //Jupiter   
    double cores5[3] = {0.785, 0.562, 0.222};
    double tamanho5[3] = {17, 18, 16};
-   CorpoCeleste jupiter(cores5, 77.833, tamanho5, 4330, corpo_null);
+   CorpoCeleste jupiter(cores5, 77.833 + tamanhoSol, tamanho5, 4330, corpo_null);
 
    //Saturno   
    double cores6[3] = {0.687, 0.558, 0.210};
    double tamanho6[3] = {15, 16, 14};
-   CorpoCeleste saturno(cores6, 142.94, tamanho6, 10752, corpo_null);
+   CorpoCeleste saturno(cores6, 142.94 + tamanhoSol, tamanho6, 10752, corpo_null);
 
    //Urano  
    double cores7[3] = {0.332, 0.5, 0.664};
    double tamanho7[3] = {7.35, 14, 12};
-   CorpoCeleste urano(cores7, 191.39, tamanho7, 31762, corpo_null);
+   CorpoCeleste urano(cores7, 191.39 + tamanhoSol, tamanho7, 31762, corpo_null);
 
    //Netuno   
    double cores8[3] = {0.210, 0.406, 0.585};
    double tamanho8[3] = {7.1, 14, 12};
-   CorpoCeleste netuno(cores8, 225.218, tamanho8, 60140, corpo_null);
+   CorpoCeleste netuno(cores8, 225.218 + tamanhoSol, tamanho8, 60140, corpo_null);
 
 
    planetas.push_back(mercurio);
@@ -153,131 +173,104 @@ void criaPlanetas(){
    planetas.push_back(saturno);
    planetas.push_back(urano);
    planetas.push_back(netuno);
-   std::cout<<"Dia: "<<day<<std::endl;
+
+
    for(int i = 0; i < planetas.size(); ++i){
-      GLfloat day_in_the_planet = ((GLfloat)360/(GLfloat) planetas[i].dias_terrestre_no_ano) * year;
-
       glPushMatrix();
-      
-      glRotatef (day_in_the_planet, 0.0, 1.0, 0.0);
-      glTranslatef (planetas[i].distancia + 40, 0.0, 0.0);
-      glColor3f(planetas[i].cores[0], planetas[i].cores[1], planetas[i].cores[2]);
-      glRotatef ((GLfloat) year*13, 0.0, 1.0, 0.0);
-      glutSolidSphere(planetas[i].tamanho[0], planetas[i].tamanho[1], planetas[i].tamanho[2]); 
+      planetas[i].rederizaCorpo();
 
-      if( planetas[i].corpos_orbitando.size() != 0 ){
-         for(int j = 0; j < planetas[i].corpos_orbitando.size(); ++j){
-            CorpoCeleste satelite =  planetas[i].corpos_orbitando[j];
-
-            GLfloat day_in_the_moon = ((GLfloat)360/(GLfloat)satelite.dias_terrestre_no_ano) * year;
-            glPushMatrix();
-      
-            glRotatef (day_in_the_planet, 0.0, 1.0, 0.0);
-            glTranslatef (satelite.distancia + planetas[i].tamanho[0], 0.0, 0.0);
-            glColor3f(satelite.cores[0], satelite.cores[1], satelite.cores[2]);
-            glutSolidSphere(satelite.tamanho[0], satelite.tamanho[1], satelite.tamanho[2]);  
-
-            glPopMatrix();   
-         }
+      if( i == 5 ){ //saturno
+         criaAneisSaturno();
       }
-
-      if( i == 5 ){ //seleciona saturno
-         
-         glDisable(GL_CULL_FACE);
-         glDisable(GL_LIGHTING);
-         glColor3f(0.487, 0.358, 0.110);
-         criaAnel(20, 23);
-         glColor3f(0.387, 0.258, 0.000);
-         criaAnel(24, 26);
-         glEnable(GL_CULL_FACE);
-         glEnable(GL_LIGHTING);
-      }
-
-      glPopMatrix();        
+      glPopMatrix();
+      
    }
 }
 
+void criaAneisSaturno(){
+   glDisable(GL_CULL_FACE);
+   glDisable(GL_LIGHTING);
+   glColor3f(0.487, 0.358, 0.110);
+   criaAnel(20, 23);
+   glColor3f(0.387, 0.258, 0.000);
+   criaAnel(24, 26);
+   glEnable(GL_CULL_FACE);
+   glEnable(GL_LIGHTING);
+}
+
 void criaAnel(int raioInterno, int raioExterno){
-   int i;
-   int triangleAmount = 30; //# of triangles used to draw circle
-   double PI = 3.14159;
-   //GLfloat radius = 0.8f; //radius
-   GLfloat twicePi = 2.0f * PI;
+   int totalIteracoes = 30; 
+   GLfloat doisPi = 2.0f * 3.14159;
    
    glBegin(GL_TRIANGLE_STRIP);
-      for(i = 0; i <= triangleAmount;i++) { 
+      for(int i = 0; i <= totalIteracoes;i++) { 
          glVertex3f(
-            0 + (raioInterno * cos(i *  twicePi / triangleAmount)),
+            0 + (raioInterno * cos(i *  doisPi / totalIteracoes)),
             0.0, 
-            0 + (raioInterno * sin(i * twicePi / triangleAmount))
+            0 + (raioInterno * sin(i * doisPi / totalIteracoes))
          );
          glVertex3f(
-            0 + (raioExterno * cos(i *  twicePi / triangleAmount)),
+            0 + (raioExterno * cos(i *  doisPi / totalIteracoes)),
             0.0, 
-            0 + (raioExterno * sin(i * twicePi / triangleAmount))
+            0 + (raioExterno * sin(i * doisPi / totalIteracoes))
          );
       }
       
    glEnd();
 }
 
-void makeLuz(){
-   float a = 0.2f;
-   float luzAmbiente[] = {a, a, a, 0.0f};
-   
-   float d = 1.0;
-   float e = 1.0;
-   float luzDifusa[] = {d, d, d, 1.0f};
-   float luzEspecular[] = {e, e, e, 1.0f};
+void fazLuz(){
+   float luzAmbiente[] = {0.2, 0.2, 0.2, 0.0f};
+   float luzDifusa[] = {1.0, 1.0, 1.0, 1.0f};
+   float luzEspecular[] = {1.0, 1.0, 1.0, 1.0f};
    float posicaoLuz[] = {0.0f, 0.0f, 0.0f, 1.0f};
 
-   // Ativa o uso da luz ambiente 
    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
-   glEnable(GL_COLOR_MATERIAL);
-   // Define os parâmetros da luz de número 0
-   glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente);
 
+   glEnable(GL_COLOR_MATERIAL);
+
+   glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente);
    glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa);
    glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular);
    glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz);
    
-
    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
 
    glEnable(GL_LIGHTING);
    glEnable(GL_LIGHT0);
 
-   
-
 }
 
+void criaSol(){
+   float luzAmbiente[] = {0.7, 0.7, 0.7, 0.5f};
+   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+   glColor3f(1.0, 0.5, 0.0);
+   glutSolidSphere(40.0, 20, 16); 
+}
+
+void rotacionaSistema(){
+   glRotatef(rotate_x, 1.0, 0.0, 0.0);
+   glRotatef(rotate_y, 0.0, 1.0, 0.0);
+   glRotatef(rotate_z, 0.0, 0.0, 1.0);
+}
 
 void display(void)
 {
 
    reshape(1000, 700);
 
-   glClear (GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-      
+   glClear (GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);   
    glCullFace(GL_FRONT);
    
-   float a = 0.7f;
-   float luzAmbiente[] = {a, a, a, 0.5f};
-   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+
    
-
    glPushMatrix();
-   glRotatef(rotate_x, 1.0, 0.0, 0.0);
-   glRotatef(rotate_y, 0.0, 1.0, 0.0);
-   glRotatef(rotate_z, 0.0, 0.0, 1.0);
 
-   glColor3f(1.0, 0.5, 0.0);
-   glutSolidSphere(40.0, 20, 16);   /* draw sun */
+      rotacionaSistema();
 
-   makeLuz();
-   criaPlanetas();
+      criaSol();
+      fazLuz();
+      criaPlanetas();
 
    glPopMatrix();
    glutSwapBuffers();
@@ -298,14 +291,6 @@ void reshape (int w, int h)
 void keyboard (unsigned char key, int x, int y)
 {
    switch (key) {
-      case 'd':
-         day = day + 5;
-         glutPostRedisplay();
-         break;
-      case 'D':
-         day = day - 5;
-         glutPostRedisplay();
-         break;
       case 'y':
          year = year + 1;
          glutPostRedisplay();
@@ -338,11 +323,11 @@ void keyboard (unsigned char key, int x, int y)
 void mouseWheel(int button, int dir, int x, int y)
 {
    glTranslatef(0,0,0);
-   if (button == 4)
+   if (button == 3)
    {
       zoom += 1;
    }
-   else if(button == 3)
+   else if(button == 4)
    {
       zoom -= 1;
    }
