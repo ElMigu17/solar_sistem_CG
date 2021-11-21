@@ -56,6 +56,8 @@ static int iv = 0;
 static double zoom = 1000.0;
 
 void reshape (int w, int h);
+void criaAnel(int raioInterno, int raioExterno);
+
 double rotate_y=0;
 double rotate_x=0;
 double rotate_z=0;
@@ -180,8 +182,42 @@ void criaPlanetas(){
             glPopMatrix();   
          }
       }
+
+      if( i == 5 ){
+         
+      glDisable(GL_CULL_FACE);
+		criaAnel(20, 23);
+      glColor3f(0.487, 0.358, 0.110);
+		criaAnel(24, 26);
+      glEnable(GL_CULL_FACE);
+      }
+
       glPopMatrix();        
    }
+}
+
+void criaAnel(int raioInterno, int raioExterno){
+   int i;
+   int triangleAmount = 30; //# of triangles used to draw circle
+   double PI = 3.14159;
+   //GLfloat radius = 0.8f; //radius
+   GLfloat twicePi = 2.0f * PI;
+   
+   glBegin(GL_TRIANGLE_STRIP);
+      for(i = 0; i <= triangleAmount;i++) { 
+         glVertex3f(
+            0 + (raioInterno * cos(i *  twicePi / triangleAmount)),
+            0.0, 
+            0 + (raioInterno * sin(i * twicePi / triangleAmount))
+         );
+         glVertex3f(
+            0 + (raioExterno * cos(i *  twicePi / triangleAmount)),
+            0.0, 
+            0 + (raioExterno * sin(i * twicePi / triangleAmount))
+         );
+      }
+      
+   glEnd();
 }
 
 void makeLuz(){
