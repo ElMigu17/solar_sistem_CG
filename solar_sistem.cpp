@@ -49,7 +49,7 @@
 #include <math.h>
 #include <vector>
 
-static int year = 0;
+static int year = 0, velocidade = 1;
 static double zoom = 1000.0;
 
 double rotate_y=0;
@@ -283,7 +283,7 @@ void rodaAnimacao(int a)
     {
         glutPostRedisplay();
         glutTimerFunc(1000 / 60, rodaAnimacao, a);
-        year += 1;
+        year += velocidade;
     }
 }
 
@@ -307,20 +307,18 @@ void keyboard (unsigned char key, int x, int y)
          animacao = !animacao;
          rodaAnimacao(1);
       case 'y':
-         year = year + 1;
+         year = year + velocidade;
          glutPostRedisplay();
          break;
       case 'Y':
-         year = year - 1;
+         year = year - velocidade;
          glutPostRedisplay();
          break;
-      case 'u':
-         year = year + 10;
-         glutPostRedisplay();
+      case 'v':
+         velocidade = 1;
          break;
-      case 'U':
-         year = year - 10;
-         glutPostRedisplay();
+      case 'V':
+         velocidade = 10;
          break;
 
       
