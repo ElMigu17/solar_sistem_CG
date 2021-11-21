@@ -18,7 +18,7 @@
 
 ## Quais interações temos?
 - Tecla Y e y: Translação manual do sistema
-- Tecla V e v: Atribui a velocidade de translação o valor 1 (V) ou o valor 10 (V)
+- Tecla V e v: Atribui a velocidade de translação o valor 1 (v) ou o valor 10 (V)
 - Tecla A ou a: Ambos ligam ou desligam a animação 
 - Tecla ↑ e ↓: Rotação em torno do eixo X
 - Tecla ← e →: Rotação em torno do eixo Y
