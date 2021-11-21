@@ -45,8 +45,6 @@
 #include <GL/glut.h>
 #include <stdlib.h>
 #include <iostream>
-#include <map>
-#include <math.h>
 #include <vector>
 
 static int year = 0, velocidade = 1;
