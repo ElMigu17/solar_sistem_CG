@@ -55,6 +55,7 @@ static double zoom = 1000.0;
 double rotate_y=0;
 double rotate_x=0;
 double rotate_z=0;
+static bool animacao = false;
 
 void reshape (int w, int h);
 void criaAnel(int raioInterno, int raioExterno);
@@ -276,6 +277,16 @@ void display(void)
    glutSwapBuffers();
 }
 
+void timer(int a)
+{
+    if (automatic)
+    {
+        glutPostRedisplay();
+        glutTimerFunc(1000 / 60, timer, a);
+         y += 1;
+    }
+}
+
 
 void reshape (int w, int h)
 {
@@ -291,6 +302,10 @@ void reshape (int w, int h)
 void keyboard (unsigned char key, int x, int y)
 {
    switch (key) {
+      case 'a':
+      case 'A':
+         animacao = !animacao;
+         rodaAnimacao(1);
       case 'y':
          year = year + 1;
          glutPostRedisplay();
