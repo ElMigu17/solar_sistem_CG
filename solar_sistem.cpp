@@ -45,6 +45,7 @@
 #include <GL/glut.h>
 #include <stdlib.h>
 #include <iostream>
+#include <math.h>
 #include <vector>
 
 static int year = 0, velocidade = 1;
@@ -54,6 +55,7 @@ double rotate_y=0;
 double rotate_x=0;
 double rotate_z=0;
 static bool animacao = false;
+static bool luz = true;
 
 void reshape (int w, int h);
 void criaAnel(int raioInterno, int raioExterno);
@@ -242,6 +244,12 @@ void criaAnel(int raioInterno, int raioExterno){
    glEnd();
 }
 
+void desligaLuz(){
+   glDisable(GL_COLOR_MATERIAL);
+   glDisable(GL_LIGHTING);
+   glDisable(GL_LIGHT0);
+}
+
 void fazLuz(){
    float luzAmbiente[] = {0.2, 0.2, 0.2, 0.0f};
    float luzDifusa[] = {1.0, 1.0, 1.0, 1.0f};
@@ -265,8 +273,10 @@ void fazLuz(){
 }
 
 void criaSol(){
-   float luzAmbiente[] = {0.7, 0.7, 0.7, 0.5f};
-   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+   if(luz){
+      float luzAmbiente[] = {0.7, 0.7, 0.7, 0.5f};
+      glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
+   }
    glColor3f(1.0, 0.5, 0.0);
    glutSolidSphere(40.0, 20, 16); 
 }
@@ -292,7 +302,12 @@ void display(void)
       rotacionaSistema();
 
       criaSol();
-      fazLuz();
+      if(luz){
+         fazLuz();
+      }
+      else{
+         desligaLuz();
+      }
       criaPlanetas();
 
    glPopMatrix();
@@ -328,6 +343,7 @@ void keyboard (unsigned char key, int x, int y)
       case 'A':
          animacao = !animacao;
          rodaAnimacao(1);
+         break;
       case 'y':
          year = year + velocidade;
          glutPostRedisplay();
@@ -341,6 +357,11 @@ void keyboard (unsigned char key, int x, int y)
          break;
       case 'V':
          velocidade = 10;
+         break;
+      case 'l':
+      case 'L':
+         luz = !luz;
+         glutPostRedisplay();
          break;
 
       
