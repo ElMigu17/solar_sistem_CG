@@ -14,11 +14,11 @@
 - [x] Adicionar planetas restantes
 - [x] Fazer o zoom funcionar corretamente independente da rotação do sistema
 - [x] Adicionar luas
-- [ ] Adicionar cinturão de asteroides (?)
 
 
 ## Quais interações temos?
 - Tecla Y e y: Translação manual do sistema
+- Tecla U e u: Translação manual do sistema 10 vezes mais rápida que y
 - Tecla ↑ e ↓: Rotação em torno do eixo X
 - Tecla ← e →: Rotação em torno do eixo Y
 - Botão esquerdo e direito do mouse: Rotação em torno do eixo Z
