@@ -58,16 +58,24 @@ double rotate_x=0;
 double rotate_z=0;
 static bool animacao = false;
 static bool luz = true;
-
-void reshape (int w, int h);
-void criaAnel(int raioInterno, int raioExterno);
+static GLUquadric *quad;  
+   
+void init(void);
+void carregaECriaTextura(std::string filename);  
+void criaPlanetas();
 void criaAneisSaturno();
-void LoadTextureImageFile(std::string filename);  
-
-
-
-
-
+void criaAnel(int raioInterno, int raioExterno);
+void desligaLuz();
+void ligaLuz();
+void rotacionaSistema(int i);
+void criaSol();
+void display(void);
+void rodaAnimacao(int a);
+void reshape (int w, int h);
+void keyboard (unsigned char key, int x, int y);
+void mouseWheel(int button, int dir, int x, int y);
+void specialKeys(int key, int x, int y);
+int main(int argc, char** argv);
 
 class CorpoCeleste {
    public:
@@ -113,19 +121,18 @@ void init(void)
    glEnable(GL_LINE_SMOOTH); 
    glShadeModel (GL_FLAT);
    glShadeModel (GL_SMOOTH);
-
-
    
    glEnable(GL_DEPTH_TEST);
    glEnable(GL_CULL_FACE);
    glCullFace(GL_FRONT);
-      LoadTextureImageFile("sun.jpg");  
+   carregaECriaTextura("sun.jpg");  
 
    
 }
 
-void LoadTextureImageFile(std::string filename)  
+void carregaECriaTextura(std::string filename)  
 {  
+
    unsigned int rendererID;
    unsigned char* localBuffer;
    int height;
@@ -145,15 +152,13 @@ void LoadTextureImageFile(std::string filename)
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);  
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);  
   
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer); //change first GL_RGBA to GL_RGBA8
-   glBindTexture(GL_TEXTURE_2D, 0);
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer); 
 
-   glActiveTexture(GL_TEXTURE + 0);
-   glBindTexture(GL_TEXTURE_2D, rendererID);
     // free buffer 
+   quad = gluNewQuadric();  
+   gluQuadricTexture(quad, 40);  
   
 }  
-
 
 void criaPlanetas(){
    std::vector<CorpoCeleste> planetas;
@@ -256,10 +261,12 @@ void criaPlanetas(){
 void criaAneisSaturno(){
    glDisable(GL_CULL_FACE);
    glDisable(GL_LIGHTING);
+
    glColor3f(0.487, 0.358, 0.110);
    criaAnel(20, 23);
    glColor3f(0.387, 0.258, 0.000);
    criaAnel(24, 26);
+   
    glEnable(GL_CULL_FACE);
    glEnable(GL_LIGHTING);
 }
@@ -285,15 +292,13 @@ void criaAnel(int raioInterno, int raioExterno){
    glEnd();
 }
 
-
-
 void desligaLuz(){
    glDisable(GL_COLOR_MATERIAL);
    glDisable(GL_LIGHTING);
    glDisable(GL_LIGHT0);
 }
 
-void fazLuz(){
+void ligaLuz(){
    float luzAmbiente[] = {0.2, 0.2, 0.2, 0.0f};
    float luzDifusa[] = {1.0, 1.0, 1.0, 1.0f};
    float luzEspecular[] = {1.0, 1.0, 1.0, 1.0f};
@@ -315,6 +320,12 @@ void fazLuz(){
 
 }
 
+void rotacionaSistema(int i){
+   glRotatef(rotate_x*i, 1.0, 0.0, 0.0);
+   glRotatef(rotate_y*i, 0.0, 1.0, 0.0);
+   glRotatef(rotate_z*i, 0.0, 0.0, 1.0);
+}
+
 void criaSol(){
    glEnable(GL_TEXTURE_2D);
    if(luz){
@@ -322,22 +333,15 @@ void criaSol(){
       glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
    }
    glColor3f(1.0,1.0,1.0);
-   GLUquadric *quad;  
+     
+   glPushMatrix();
+   GLfloat diaNoCorpo = ((GLfloat)360/(GLfloat) 27) * year;
    
-   
-   //draw sun    
-   
-   quad = gluNewQuadric();  
-   gluQuadricTexture(quad, 40);  
-   
+   glRotatef (diaNoCorpo, 0.0, -1.0, 0.0);
+   rotacionaSistema(-2);
    gluSphere(quad, 40.0, 100, 100); 
+   glPopMatrix();
   
-}
-
-void rotacionaSistema(){
-   glRotatef(rotate_x, 1.0, 0.0, 0.0);
-   glRotatef(rotate_y, 0.0, 1.0, 0.0);
-   glRotatef(rotate_z, 0.0, 0.0, 1.0);
 }
 
 void display(void)
@@ -346,17 +350,16 @@ void display(void)
    reshape(1000, 700);
 
    glClear (GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);   
-   glCullFace(GL_FRONT);
    
 
    
+      rotacionaSistema(1);
    glPushMatrix();
 
-      rotacionaSistema();
 
       criaSol();
       if(luz){
-         fazLuz();
+         ligaLuz();
       }
       else{
          desligaLuz();
