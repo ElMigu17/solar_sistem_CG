@@ -48,16 +48,15 @@
 #include <math.h>
 #include <vector>
 #include "stb/stb_img.h"
-#include <string.h>
 
 static int year = 0, velocidade = 1;
 static double zoom = 1000.0;
-
-double rotate_y=0;
-double rotate_x=0;
-double rotate_z=0;
+static double rotate_y=0;
+static double rotate_x=0;
+static double rotate_z=0;
 static bool animacao = false;
 static bool luz = true;
+
 static GLUquadric *quad;  
    
 void init(void);
@@ -78,13 +77,13 @@ void specialKeys(int key, int x, int y);
 int main(int argc, char** argv);
 
 class CorpoCeleste {
-   public:
+   private:
       double cores[3];
       double distancia;
       double tamanho[3];
       int diasTerrestresNoAno;
       std::vector<CorpoCeleste> corpos_orbitando;
-
+   public:
       CorpoCeleste(double cores[3], double distancia, double tamanho[3], int diasTerrestresNoAno, std::vector<CorpoCeleste> corpos_orbitando){
          for(int i = 0; i < 3; i++){
             this->cores[i] = cores[i];
@@ -100,6 +99,7 @@ class CorpoCeleste {
          
          glRotatef (diaNoCorpo, 0.0, 1.0, 0.0);
          glTranslatef (distancia, 0.0, 0.0);
+         
          glColor3f(cores[0], cores[1], cores[2]);
          glRotatef ((GLfloat) year*13, 0.0, 1.0, 0.0);
          glutSolidSphere(tamanho[0], tamanho[1], tamanho[2]);         
@@ -128,7 +128,6 @@ void init(void)
 
 void carregaECriaTextura(std::string filename)  
 {  
-
    unsigned int rendererID;
    unsigned char* localBuffer;
    int height;
@@ -334,7 +333,6 @@ void criaSol(){
    glRotatef (diaNoCorpo, 0.0, -1.0, 0.0);
    gluSphere(quad, 40.0, 100, 100); 
    glPopMatrix();
-  
 }
 
 void display(void)
@@ -344,7 +342,7 @@ void display(void)
 
    glClear (GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);   
       
-      rotacionaSistema(1);
+   rotacionaSistema(1);
    glPushMatrix();
 
 
@@ -440,8 +438,6 @@ void mouseWheel(int button, int dir, int x, int y)
    else if(button == 0){
       rotate_z -= 2%360;
    } 
-   int w = 1000;
-   int h = 700;
 
    glutPostRedisplay();
 }
