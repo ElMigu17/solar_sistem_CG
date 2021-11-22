@@ -117,17 +117,13 @@ class CorpoCeleste {
 
 void init(void) 
 {
-   glClearColor (0.0, 0.0, 0.0, 0.0);
-   glEnable(GL_LINE_SMOOTH); 
-   glShadeModel (GL_FLAT);
    glShadeModel (GL_SMOOTH);
    
    glEnable(GL_DEPTH_TEST);
    glEnable(GL_CULL_FACE);
    glCullFace(GL_FRONT);
    carregaECriaTextura("sun.jpg");  
-
-   
+ 
 }
 
 void carregaECriaTextura(std::string filename)  
@@ -139,12 +135,10 @@ void carregaECriaTextura(std::string filename)
    int width;
    int bpp;
  
-  localBuffer = stbi_load(filename.c_str(), &width, &height, &bpp, 4); 
+   localBuffer = stbi_load(filename.c_str(), &width, &height, &bpp, 4); 
   
-   
    glGenTextures(1, &rendererID);  
    glBindTexture(GL_TEXTURE_2D, rendererID);  
-
    
    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_TEXTURE_ENV_COLOR);  
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
@@ -338,7 +332,6 @@ void criaSol(){
    GLfloat diaNoCorpo = ((GLfloat)360/(GLfloat) 27) * year;
    
    glRotatef (diaNoCorpo, 0.0, -1.0, 0.0);
-   rotacionaSistema(-2);
    gluSphere(quad, 40.0, 100, 100); 
    glPopMatrix();
   
@@ -350,9 +343,7 @@ void display(void)
    reshape(1000, 700);
 
    glClear (GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);   
-   
-
-   
+      
       rotacionaSistema(1);
    glPushMatrix();
 
