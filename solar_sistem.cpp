@@ -47,6 +47,8 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
+#include "stb/stb_img.h"
+#include <string.h>
 
 static int year = 0, velocidade = 1;
 static double zoom = 1000.0;
@@ -60,6 +62,12 @@ static bool luz = true;
 void reshape (int w, int h);
 void criaAnel(int raioInterno, int raioExterno);
 void criaAneisSaturno();
+void LoadTextureImageFile(std::string filename);  
+
+
+
+
+
 
 class CorpoCeleste {
    public:
@@ -111,8 +119,41 @@ void init(void)
    glEnable(GL_DEPTH_TEST);
    glEnable(GL_CULL_FACE);
    glCullFace(GL_FRONT);
+      LoadTextureImageFile("sun.jpg");  
+
    
 }
+
+void LoadTextureImageFile(std::string filename)  
+{  
+   unsigned int rendererID;
+   unsigned char* localBuffer;
+   int height;
+   int width;
+   int bpp;
+ 
+  localBuffer = stbi_load(filename.c_str(), &width, &height, &bpp, 4); 
+  
+   
+   glGenTextures(1, &rendererID);  
+   glBindTexture(GL_TEXTURE_2D, rendererID);  
+
+   
+   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_TEXTURE_ENV_COLOR);  
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);  
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);  
+  
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer); //change first GL_RGBA to GL_RGBA8
+   glBindTexture(GL_TEXTURE_2D, 0);
+
+   glActiveTexture(GL_TEXTURE + 0);
+   glBindTexture(GL_TEXTURE_2D, rendererID);
+    // free buffer 
+  
+}  
+
 
 void criaPlanetas(){
    std::vector<CorpoCeleste> planetas;
@@ -244,6 +285,8 @@ void criaAnel(int raioInterno, int raioExterno){
    glEnd();
 }
 
+
+
 void desligaLuz(){
    glDisable(GL_COLOR_MATERIAL);
    glDisable(GL_LIGHTING);
@@ -273,12 +316,22 @@ void fazLuz(){
 }
 
 void criaSol(){
+   glEnable(GL_TEXTURE_2D);
    if(luz){
       float luzAmbiente[] = {0.7, 0.7, 0.7, 0.5f};
       glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
    }
-   glColor3f(1.0, 0.5, 0.0);
-   glutSolidSphere(40.0, 20, 16); 
+   glColor3f(1.0,1.0,1.0);
+   GLUquadric *quad;  
+   
+   
+   //draw sun    
+   
+   quad = gluNewQuadric();  
+   gluQuadricTexture(quad, 40);  
+   
+   gluSphere(quad, 40.0, 100, 100); 
+  
 }
 
 void rotacionaSistema(){
