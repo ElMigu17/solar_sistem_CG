@@ -7,7 +7,7 @@
 - [x] Operações de transformações geométricas
 - [x] Iluminação
 - [x] Animação
-- [ ] Textura
+- [x] Textura
 - [x] Manipulação de objetos hierárquicos
 
 ## O que falta fazer?
