@@ -47,7 +47,8 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
-#include "stb/stb_img.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb/stb_image.h"
 
 static int year = 0, velocidade = 1;
 static double zoom = 1000.0;
